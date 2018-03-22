@@ -1,7 +1,7 @@
 import Foundation
 import SwiftCrypto
 
-public indirect enum MerkleTree<T: Hashing & Equatable> where T.T == String {
+public indirect enum MerkleTree<T: Hashing> where T.T == String {
 
     case tree(left: MerkleTree<T>, right: MerkleTree<T>, hash: String)
     case leaf(T, hash: String)
@@ -39,21 +39,6 @@ public indirect enum MerkleTree<T: Hashing & Equatable> where T.T == String {
             return h
         case .leaf(_, hash: let h):
             return h
-        }
-    }
-
-    public func find(value: T) -> Bool {
-        switch self {
-        case .tree(left: let l, right: let r, _):
-            if l.find(value: value) {
-                return true
-            }
-            if r.find(value: value) {
-                return true
-            }
-            return false
-        case .leaf(let v, _):
-            return v == value
         }
     }
 
@@ -104,6 +89,25 @@ public func merkleVerifyData<T>(forLeaf leaf: String, withRoot root: String, nod
         }
     }
     return currentHash == root
+}
+
+extension MerkleTree where T: Equatable {
+
+    public func find(value: T) -> Bool {
+        switch self {
+        case .tree(left: let l, right: let r, _):
+            if l.find(value: value) {
+                return true
+            }
+            if r.find(value: value) {
+                return true
+            }
+            return false
+        case .leaf(let v, _):
+            return v == value
+        }
+    }
+
 }
 
 extension MerkleTree: Equatable {
