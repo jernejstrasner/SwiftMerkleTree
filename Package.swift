@@ -3,21 +3,21 @@
 import PackageDescription
 
 let package = Package(
-    name: "MerkleTreeKit",
+    name: "MerkleTree",
     products: [
         .library(
-            name: "MerkleTreeKit",
-            targets: ["MerkleTreeKit"]),
+            name: "MerkleTree",
+            targets: ["MerkleTree"]),
    ],
     dependencies: [
         .package(url: "https://github.com/jernejstrasner/SwiftCrypto.git", .branch("master"))
     ],
     targets: [
         .target(
-            name: "MerkleTreeKit",
+            name: "MerkleTree",
             dependencies: ["SwiftCrypto"]),
         .testTarget(
-            name: "MerkleTreeKitTests",
-            dependencies: ["MerkleTreeKit"]),
+            name: "MerkleTreeTests",
+            dependencies: ["MerkleTree"]),
     ]
 )

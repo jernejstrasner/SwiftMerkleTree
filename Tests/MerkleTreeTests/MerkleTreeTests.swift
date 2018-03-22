@@ -1,5 +1,5 @@
 import XCTest
-@testable import MerkleTreeKit
+@testable import MerkleTree
 
 class MerkleTreeTests: XCTestCase {
 
