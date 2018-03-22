@@ -1,7 +1,7 @@
 import Foundation
 import SwiftCrypto
 
-indirect enum MerkleTree<T: Hashing & Equatable> where T.T == String {
+public indirect enum MerkleTree<T: Hashing & Equatable> where T.T == String {
 
     case tree(left: MerkleTree<T>, right: MerkleTree<T>, hash: String)
     case leaf(T, hash: String)
@@ -75,14 +75,18 @@ indirect enum MerkleTree<T: Hashing & Equatable> where T.T == String {
         }
     }
 
-    public func auditProof(forHash hash: String) -> [String]? {
+    public enum Side {
+        case right, left
+    }
+
+    public func auditProof(forHash hash: String) -> [(String, Side)]? {
         switch self {
         case .tree(left: let left, right: let right, hash: _):
             if let leftHashes = left.auditProof(forHash: hash) {
-                return leftHashes + [right.hash]
+                return leftHashes + [(right.hash, .right)]
             }
             if let rightHashes = right.auditProof(forHash: hash) {
-                return rightHashes + [left.hash]
+                return rightHashes + [(left.hash, .left)]
             }
             return nil
         case .leaf(_, hash: let h):
@@ -90,6 +94,16 @@ indirect enum MerkleTree<T: Hashing & Equatable> where T.T == String {
         }
     }
 
+}
+
+public func merkleVerifyData<T>(forLeaf leaf: String, withRoot root: String, nodes: [(String, MerkleTree<T>.Side)], hashAlgorithm: CryptoAlgorithm = .sha512) -> Bool {
+    let currentHash = nodes.reduce(leaf) { (result, node) -> String in
+        switch node.1 {
+        case .right: return (result + node.0).digest(hashAlgorithm)
+        case .left: return (node.0 + result).digest(hashAlgorithm)
+        }
+    }
+    return currentHash == root
 }
 
 extension MerkleTree: Equatable {
@@ -109,7 +123,7 @@ extension MerkleTree: Equatable {
 
 extension MerkleTree: CustomStringConvertible {
 
-    var description: String {
+    public var description: String {
         switch self {
         case .tree(left: let l, right: let r, _):
             return l.description + " " + r.description

@@ -36,12 +36,21 @@ class MerkleTreeTests: XCTestCase {
 
     func testAuditProof() {
         let proof = tree.auditProof(forHash: "d".sha512)!
-        let test = [
-            "87c568e037a5fa50b1bc911e8ee19a77c4dd3c22bce9932f86fdd8a216afe1681c89737fada6859e91047eece711ec16da62d6ccb9fd0de2c51f132347350d8c",
-            "f4f1e677f44c63d0c6ad86e13a0d4b743fa0a20559dc4650ab2e4356cdef5d8a370a024d9b8819831f5735a5b34d9002d93c13134f0dec2915a23a4f5abe0385",
-            "2449badf7609235b564daabc1ae1ee7276fe4d5015f938a21dec8864f8d81aaeb656c318afdead73d3d2dad05eef81f6b81990f27f8224316c5aad12b2860079"
+        let test: [(String, MerkleTree<String>.Side)] = [
+            ("87c568e037a5fa50b1bc911e8ee19a77c4dd3c22bce9932f86fdd8a216afe1681c89737fada6859e91047eece711ec16da62d6ccb9fd0de2c51f132347350d8c", .right),
+            ("f4f1e677f44c63d0c6ad86e13a0d4b743fa0a20559dc4650ab2e4356cdef5d8a370a024d9b8819831f5735a5b34d9002d93c13134f0dec2915a23a4f5abe0385", .right),
+            ("2449badf7609235b564daabc1ae1ee7276fe4d5015f938a21dec8864f8d81aaeb656c318afdead73d3d2dad05eef81f6b81990f27f8224316c5aad12b2860079", .left),
         ]
-        XCTAssertEqual(test, proof)
+        for (a, b) in zip(proof, test) {
+            XCTAssertEqual(a.0, b.0)
+            XCTAssertEqual(a.1, b.1)
+        }
+    }
+
+    func testMerkleVerifyData() {
+        let proof = tree.auditProof(forHash: "d".sha512)!
+        XCTAssertTrue(merkleVerifyData(forLeaf: "d".sha512, withRoot: tree.hash, nodes: proof))
+        XCTAssertFalse(merkleVerifyData(forLeaf: "f".sha512, withRoot: tree.hash, nodes: proof))
     }
 
     static var allTests = [
@@ -51,6 +60,7 @@ class MerkleTreeTests: XCTestCase {
         ("testDepth", testDepth),
         ("testBuildTree", testBuildTree),
         ("testAuditProof", testAuditProof),
+        ("testMerkleVerifyData", testMerkleVerifyData),
     ]
 
 }
