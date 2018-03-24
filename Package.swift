@@ -10,7 +10,7 @@ let package = Package(
             targets: ["MerkleTree"]),
    ],
     dependencies: [
-        .package(url: "https://github.com/jernejstrasner/SwiftCrypto.git", .branch("master"))
+        .package(url: "https://github.com/jernejstrasner/SwiftCrypto.git", from: "1.0.1")
     ],
     targets: [
         .target(

@@ -1,16 +1,16 @@
 import Foundation
 import SwiftCrypto
 
-public indirect enum MerkleTree<T: Hashing> where T.T == String {
+public indirect enum MerkleTree<T: SwiftCrypto.Hashable> where T.Hash == String {
 
     case tree(left: MerkleTree<T>, right: MerkleTree<T>, hash: String)
     case leaf(T, hash: String)
 
-    init(withList list: [T], hashAlgorithm: CryptoAlgorithm = .sha512) {
+    init(withList list: [T], hashAlgorithm: SwiftCrypto.Algorithm = .sha512) {
         self.init(withSlice: ArraySlice(list), hashAlgorithm: hashAlgorithm)
     }
 
-    private init(withSlice slice: ArraySlice<T>, hashAlgorithm: CryptoAlgorithm = .sha512) {
+    private init(withSlice slice: ArraySlice<T>, hashAlgorithm: SwiftCrypto.Algorithm = .sha512) {
         assert(slice.count > 0, "Can't initialize a tree with 0 elements")
         switch slice.count {
         case 1:
@@ -81,7 +81,7 @@ public indirect enum MerkleTree<T: Hashing> where T.T == String {
 
 }
 
-public func merkleVerifyData<T>(forLeaf leaf: String, withRoot root: String, nodes: [(String, MerkleTree<T>.Side)], hashAlgorithm: CryptoAlgorithm = .sha512) -> Bool {
+public func merkleVerifyData<T>(forLeaf leaf: String, withRoot root: String, nodes: [(String, MerkleTree<T>.Side)], hashAlgorithm: SwiftCrypto.Algorithm = .sha512) -> Bool {
     let currentHash = nodes.reduce(leaf) { (result, node) -> String in
         switch node.1 {
         case .right: return (result + node.0).digest(hashAlgorithm)

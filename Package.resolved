@@ -5,18 +5,18 @@
         "package": "CCommonCrypto",
         "repositoryURL": "https://github.com/jernejstrasner/CCommonCrypto.git",
         "state": {
-          "branch": "master",
+          "branch": null,
           "revision": "0530a4637e4a3728f6d5f23199a2f6e4f56c126d",
-          "version": null
+          "version": "1.1.0"
         }
       },
       {
         "package": "SwiftCrypto",
         "repositoryURL": "https://github.com/jernejstrasner/SwiftCrypto.git",
         "state": {
-          "branch": "master",
-          "revision": "9b042cf11872a657dd0cdc5b28633f0d94581982",
-          "version": null
+          "branch": null,
+          "revision": "c00a115c0e79eb9b68a53060670469a0a9a349f4",
+          "version": "1.0.1"
         }
       }
     ]
